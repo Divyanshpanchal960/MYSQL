@@ -1,0 +1,149 @@
+-- tcl (transaction control language)
+-- transaction - logical statement
+-- control/manage
+
+create database mydev1;
+use mydev1;
+create table devdtt1 (
+id int primary key auto_increment,
+name varchar(20));
+alter table devdtt1 modify column id int unique;
+alter table devdtt1 modify column id int auto_increment primary key;
+insert into devdtt1 values(id,name),('1','divyansh'),('2','kapil'),('3','sourabh'),('4','nilesh'),('5','nikhil'),('6','sam');
+select * from devdtt1;
+DROP TABLE  IF EXISTS DEVDTT1;
+-- 1) START TRANSACTION 
+-- 2) PERFORMING DDL AND DML OPERATIONS
+-- 3) TRANSACTION END 
+
+-- 1) AUTOCOMMIT => DISABLE/WRITE/(START TRANSACTION)
+-- 2)
+-- 3) END (COMMIT,ROLLBACK,DDL STATEMENT,DCL STATEMENT)
+-- COMMIT IS A STATEMENT OF TCL WHICH WILL SAVE THE TRANSACTION PERMANENTLY INTO THE DATABASE
+-- ROLL BACK IS A STATEMENT OF TCL WHICH WILL DISCARD/REMOVE THE CHANGES IN THE DATABASE
+START TRANSACTION;
+INSERT INTO DEVDTT1 VALUES('7','TUSHAR');
+SELECT * FROM DEVDTT1;
+COMMIT;                    -- PERMANENTLY SAVE THE CHANGES 
+
+start transaction;
+insert into devdtt1 values('9','daring');
+UPDATE DEVDTT1 SET NAME='BRAIN' WHERE ID='8';
+select * from devdtt1;
+commit;
+
+start transaction;
+SET SQL_SAFE_UPDATES=0;
+delete from devdtt1;
+ROLLBACK; -- REVRT (UNDO) THE TRANSACTION WHICH WE DELETED FROM OUR TABLE 
+SELECT * FROM DEVDTT1;
+use mydev1;
+START TRANSACTION;
+insert into devdtt1 values('10','mehul');
+select * from devdtt1;
+commit;
+
+START TRANSACTION;
+DELETE FROM DEVDTT1;
+ROLLBACK;
+
+-- ROLLBACK TO SAVEPOINT;
+START TRANSACTION;
+SELECT * FROM DEVDTT1;
+UPDATE DEVDTT1 SET NAME='XYZZ';
+SAVEPOINT TUSHAR_SAVEPOINT;
+INSERT INTO DEVDTT1 VALUES(12,'OIFOFID');
+ROLLBACK TO TUSHAR_SAVEPOINT;
+ROLLBACK;
+
+START TRANSACTION;
+SELECT * FROM DEVDTT1;
+DELETE FROM DEVDTT1 WHERE NAME='XYZZZ' AND ID=1;
+COMMIT;
+ROLLBACK;
+INSERT INTO DEVDTT1 VALUES(ID,NAME),('1','DEV');
+COMMIT;
+
+-- COMMIT ==> PEREMANENTLY SAVE THE CHANGES
+-- ROLLBACK ==> UNDO THE TRANSACTION WHICH WE DELETED
+-- SAVEPOINT ==> SET AN BARRIER OR PARTIALLY ROLLBACK
+-- DROP AND TRUNCATE CANNOT BE REVERT BACK (UNDO) BECOZ OF DDL STATEMENT OR DDL STATEMENT CONTENT TRANSACTION KO SAVE KR DETE HAI]
+-- DELETE CAN BE REVERT BACK OR ROLL BACK 
+-- RECURSIVE CTE USE REGEX1;
+
+CREATE TABLE T9 (ID INT,
+NAME VARCHAR(10),
+GENDER CHAR(9));
+
+INSERT INTO T9(ID,NAME,GENDER) VALUES (101,'DEV','MALE');
+ALTER TABLE T9 MODIFY COLUMN ID INT PRIMARY KEY;
+INSERT INTO T9(ID,NAME,GENDER) VALUES (102,'PREXX','MALE');
+SELECT * FROM T9;
+INSERT INTO T9(ID,NAME,GENDER) VALUES (102,'PREXX','MALE');
+
+START TRANSACTION ;
+UPDATE T9 SET NAME='DIVYANSH' ;
+savepoint DIVYANSH_SAVEPOINT;
+INSERT INTO T9 VALUES(103,'CRESS','FEMALE');
+ROLLBACK TO DIVYANSH_SAVEPOINT;
+INSERT INTO T9 VALUES(103,'KETHERINA','FEMALE');
+COMMIT;
+SELECT * FROM T9;
+UPDATE T9 SET NAME='SPARSHI' WHERE ID=103;
+COMMIT;
+
+START TRANSACTION;
+
+
+
+
+create database regex123;
+use regex123;
+
+CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    name VARCHAR(100),
+    manager_id INT,
+    FOREIGN KEY (manager_id) REFERENCES employees(employee_id)
+);
+
+
+INSERT INTO employees (employee_id, name, manager_id) VALUES
+(1, 'Alice', NULL),       -- CEO
+(2, 'Bob', 1),            -- VP of Sales
+(3, 'Carol', 1),          -- VP of Engineering
+(4, 'David', 2),          -- Sales Manager 1
+(5, 'Eve', 2),            -- Sales Manager 2
+(6, 'Frank', 3),          -- Engineering Manager 1
+(7, 'Grace', 3),          -- Engineering Manager 2
+(8, 'Heidi', 4),          -- Salesperson under David
+(9, 'Ivan', 4),           -- Salesperson under David
+(10, 'Judy', 5),          -- Salesperson under Eve
+(11, 'Mallory', 6),       -- Engineer under Frank
+(12, 'Niaj', 6),          -- Engineer under Frank
+(13, 'Olivia', 7),        -- Engineer under Grace
+(14, 'Peggy', 7),         -- Engineer under Grace
+(15, 'Trent', 3);         -- Tech Lead under Carol (no direct reports)
+
+SELECT * FROM EMPLOYEES;
+
+WITH RECURSIVE CTE AS (
+SELECT EMP.EMPLOYEE_ID,EMP.NAME,EMP.NAME AS MANAGERCHAIN 
+FROM EMPLOYEES AS EMP
+WHERE EMP.MANAGER_ID IS NULL
+UNION
+SELECT EMP.EMPLOYEE_ID,EMP.NAME,
+CONCAT(MGR.MANAGERCHAIN,'->',EMP.NAME) AS MANAGERCHAIN FROM EMPLOYEES AS EMP
+JOIN CTE AS MGR ON EMP.MANAGER_ID=MGR.EMPLOYEE_ID)
+
+SELECT * FROM CTE;
+SELECT * FROM EMPLOYEES;
+SELECT EMP.NAME AS EMPLOYEENAME,EMP.EMPLOYEE_ID,MGR.NAME AS MANAGER_NAME,MGR.MANAGER_ID,
+CONCAT(EMP.NAME,'->',MGR.NAME)
+FROM EMPLOYEES AS EMP
+JOIN EMPLOYEES AS MGR WHERE MGR.EMPLOYEE_ID=EMP.MANAGER_ID;
+
+
+
+-- LEARNING ASSIGNMENT
+-- GRAND AND REVOKE OR ROLES 
