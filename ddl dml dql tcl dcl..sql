@@ -302,3 +302,22 @@ select * from department;
 select * from attendance;
 select * from salaryHistory;
 
+-- Write an SQL query to find the top 5 most rented films in the Sakila database.
+use sakila;
+select * from film;
+select * from rental;
+select * from inventory;
+select * from category;
+-- 2️⃣ Show actors who acted in “ACADEMY DINOSAUR.”
+select * from actor;
+select * from film;
+select * from film_actor;
+select concat_ws(' ',first_name,last_name),f.title from actor as a join film_actor as fa
+on a.actor_id=fa.actor_id join film as f on f.film_id=fa.film_id where title='ACADEMY DINOSAUR';
+
+
+
+-- 3 ️⃣ Display customer names with the store city they belong to.
+SELECT * FROM CUSTOMER;
+SELECT * FROM CITY;
+SELECT * FROM STORE CITY;
